@@ -37,3 +37,6 @@ Open two additional terminal windows in the client/target directory and run the 
 ```bash
 java -jar client-0.0.1-SNAPSHOT.jar
 ```
+
+![img.png](img.png)
+![img_1.png](img_1.png)
