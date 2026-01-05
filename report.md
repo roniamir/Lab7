@@ -1,31 +1,39 @@
-# דוח מעבדה 7 - משחק איקס-עיגול ברשת (OCSF)
+# Lab 7 Report - Online Tic-Tac-Toe (OCSF)
 
-**מגישים:**
-* רוני אמיר (319042701)
-* ליאוניד הירש (345931521)
-
----
-
-## אופן המימוש והסנכרון
-הפרויקט מבוסס על ארכיטקטורת **Client-Server** תוך שימוש בתשתית **OCSF**. המימוש מתמקד בניהול מצב המשחק בצד השרת ועדכון הלקוחות בזמן אמת.
-
-### מנגנון הקצאת תפקידים וסנכרון תורות
-כדי לפתור את בעיית חוסר הוודאות בזהות השחקנים בתחילת המשחק, מימשנו לוגיקה של "לחיצת יד" (Handshake):
-1. **חיבור ראשוני:** הלקוח נפתח במצב "המתנה ליריב" כאשר הלוח נעול.
-2. **הקצאת תפקיד (Role Assignment):** רק לאחר התחברות השחקן השני, השרת מגריל/קובע מי שחקן 'X' ומי שחקן 'O' ושולח הודעה אישית לכל אחד (`ROLE:X` או `ROLE:O`).
-3. **ניהול התורות:** השרת שולח הודעת `TURN` המציינת מי השחקן הפעיל. בצד הלקוח, מתבצעת השוואה:
-    - אם התור ששלח השרת זהה לתפקיד השחקן (`myRole == currentTurn`), הלוח נפתח ללחיצה.
-    - אחרת, הלוח נשאר נעול והתצוגה מתעדכנת ל-"תור היריב".
-
-מנגנון זה מבטיח סנכרון מלא ומונע מצב שבו שחקן מבצע מהלך שלא בתורו או ששני השחקנים חושבים שהם אותו תו.
+**Submitted by:**
+* Roni Amir (319042701)
+* Leonid Hirsch (345931521)
 
 ---
 
-## הוראות הרצה (Execution Guide)
+## Implementation and Synchronization
+The project is based on a **Client-Server** architecture utilizing the **OCSF** framework. The implementation focuses on managing the game state on the server side and updating clients in real-time.
 
-ניתן להריץ את המשחק ישירות מקבצי ה-JAR המצורפים ב-Repository:
+### Role Assignment and Turn Synchronization
+To address the uncertainty regarding player identity at the start of the game, we implemented a "Handshake" mechanism:
 
-### 1. הרצת השרת
-יש לפתוח טרמינל בתיקיית השרת ולהריץ:
+1. **Initial Connection:** The client launches in a "Waiting for opponent" state, with the game board locked.
+2. **Role Assignment:** Only after the second player connects, the server randomly assigns roles ('X' and 'O') and sends a specific message to each client (`ROLE:X` or `ROLE:O`).
+3. **Turn Management:** The server sends a `TURN` message indicating the active player. On the client side, the following check is performed:
+   - If the turn sent by the server matches the player's assigned role (`myRole == currentTurn`), the board is unlocked for input.
+   - Otherwise, the board remains locked, and the status updates to "Opponent's Turn".
+
+This mechanism ensures complete synchronization and prevents scenarios where a player moves out of turn or both players believe they hold the same symbol.
+
+---
+
+## Execution Guide
+The executable JAR files are located in the Repository at the following paths:
+* **Server:** `server/target/server-0.0.1-SNAPSHOT-jar-with-dependencies.jar`
+* **Client:** `client/target/client-0.0.1-SNAPSHOT.jar`
+
+### 1. Running the Server
+Open a terminal (CMD/PowerShell) in the `server/target` directory and run:
 ```bash
 java -jar server-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+```
+#### 2. Running the Clients (Two Players)
+Open two additional terminal windows in the client/target directory and run the following command in each:
+```bash
+java -jar client-0.0.1-SNAPSHOT.jar
+```
