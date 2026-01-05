@@ -1,14 +1,31 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/F3j_ac3s)
-# OCSF Mediator Example
+# דוח מעבדה 7 - משחק איקס-עיגול ברשת (OCSF)
 
-## Structure
-Pay attention to the three modules:
-1. **client** - a simple client built using JavaFX and OCSF. We use EventBus (which implements the mediator pattern) in order to pass events between classes (in this case: between SimpleClient and PrimaryController.
-2. **server** - a simple server built using OCSF.
-3. **entities** - a shared module where all the entities of the project live.
+**מגישים:**
+* רוני אמיר (319042701)
+* ליאוניד הירש (345931521)
 
-## Running
-1. Run Maven install **in the parent project**.
-2. Run the server using the exec:java goal in the server module.
-3. Run the client using the javafx:run goal in the client module.
-4. Press the button and see what happens!
+---
+
+## אופן המימוש והסנכרון
+הפרויקט מבוסס על ארכיטקטורת **Client-Server** תוך שימוש בתשתית **OCSF**. המימוש מתמקד בניהול מצב המשחק בצד השרת ועדכון הלקוחות בזמן אמת.
+
+### מנגנון הקצאת תפקידים וסנכרון תורות
+כדי לפתור את בעיית חוסר הוודאות בזהות השחקנים בתחילת המשחק, מימשנו לוגיקה של "לחיצת יד" (Handshake):
+1. **חיבור ראשוני:** הלקוח נפתח במצב "המתנה ליריב" כאשר הלוח נעול.
+2. **הקצאת תפקיד (Role Assignment):** רק לאחר התחברות השחקן השני, השרת מגריל/קובע מי שחקן 'X' ומי שחקן 'O' ושולח הודעה אישית לכל אחד (`ROLE:X` או `ROLE:O`).
+3. **ניהול התורות:** השרת שולח הודעת `TURN` המציינת מי השחקן הפעיל. בצד הלקוח, מתבצעת השוואה:
+    - אם התור ששלח השרת זהה לתפקיד השחקן (`myRole == currentTurn`), הלוח נפתח ללחיצה.
+    - אחרת, הלוח נשאר נעול והתצוגה מתעדכנת ל-"תור היריב".
+
+מנגנון זה מבטיח סנכרון מלא ומונע מצב שבו שחקן מבצע מהלך שלא בתורו או ששני השחקנים חושבים שהם אותו תו.
+
+---
+
+## הוראות הרצה (Execution Guide)
+
+ניתן להריץ את המשחק ישירות מקבצי ה-JAR המצורפים ב-Repository:
+
+### 1. הרצת השרת
+יש לפתוח טרמינל בתיקיית השרת ולהריץ:
+```bash
+java -jar server-0.0.1-SNAPSHOT-jar-with-dependencies.jar
